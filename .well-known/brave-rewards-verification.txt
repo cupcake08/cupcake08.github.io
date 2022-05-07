@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: cupcake08.github.io
+Token: 2b26bf174445c23826380f7e1bdc6177b5679a0b840985df11d371e6924dfe2a
