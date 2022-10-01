@@ -51650,13 +51650,13 @@ r.aA=new A.Oc()
 p=A.a2e(new A.ys(B.bF,B.Bc,B.pE,B.k6,q,B.bE,q,A.a([new A.fZ(B.x0,new A.Dt(B.Je,o,q),q),new A.fZ(B.x_,n,q),new A.fZ(B.x1,A.SN(q,q,B.co,!0,q,A.oh(A.a([B.ED,A.oh(q,r,B.Hu,"Github.")],s),q,q,q),B.aK,q,q,1,B.aL),q),B.DQ,new A.AK(new A.Od(),q,q,q,A.a6W(q,q,q,q,q,q,q,q,q,q,B.x2,q,q,q,B.tg,q,q,q,q),B.x,q,!1,B.I3,q)],p),q),q,q)
 return new A.tI(new A.Cr(!0,p,q),B.w7,q)}}
 A.Ob.prototype={
-$0(){return B.V.vS(window,"https://rgyan.com/en","Rgyan")},
+$0(){return B.V.vS(window,"http://soulguide.in/en","Rgyan")},
 $S:0}
 A.Oc.prototype={
 $0(){return B.V.vS(window,"https://github.com/cupcake08","github profile url")},
 $S:0}
 A.Od.prototype={
-$0(){B.V.vS(window,"mailto:bhankhariaa@pm.me","email")},
+$0(){return B.V.vS(window,"mailto:bhankhariaa@pm.me","email")},
 $S:0}
 A.b0.prototype={
 aM(a){var s=a.a,r=this.a
@@ -55308,7 +55308,7 @@ B.EA=new A.og(3,"visible")
 B.EB=new A.uq(null,null,null)
 B.w2=new A.G(3858759679)
 B.rC=new A.l(!0,B.w2,null,null,null,null,24,B.bg,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.EC=new A.lg("Currently I am an intern at ",null,null,B.bJ,B.rC)
+B.EC=new A.lg("Currently I am a Flutter Developer at ",null,null,B.bJ,B.rC)
 B.ED=new A.lg("You can checkout my in-progress work over on ",null,null,B.bJ,B.rC)
 B.w4=new A.G(4278221823)
 B.EL=new A.l(!0,B.w4,null,null,null,null,24,B.bg,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
