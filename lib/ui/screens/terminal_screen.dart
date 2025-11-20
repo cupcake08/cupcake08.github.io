@@ -50,8 +50,11 @@ class _TerminalScreenState extends State<TerminalScreen> {
     final bool isMobile = screenSize.width < 600;
     final double horizontalPadding = isMobile ? 12.0 : 24.0;
 
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
       backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // 1. Background
@@ -75,7 +78,12 @@ class _TerminalScreenState extends State<TerminalScreen> {
             onTap: () => _focusNode.requestFocus(),
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 20.0),
+                padding: EdgeInsets.fromLTRB(
+                  horizontalPadding,
+                  20.0,
+                  horizontalPadding,
+                  keyboardHeight > 0 ? keyboardHeight : 20.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -85,6 +93,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
                         child: ListView.builder(
                           controller: _scrollController,
                           itemCount: _controller.history.length,
+                          physics: const ClampingScrollPhysics(),
                           itemBuilder: (context, index) {
                             final entry = _controller.history[index];
                             final bool isIntro = index == 0;
