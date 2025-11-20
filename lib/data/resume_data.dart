@@ -2,9 +2,6 @@ class ResumeData {
   static const String promptSymbol = "guest@ankit-sys:~\$ ";
 
   static const String intro = '''
-INITIALIZING SYSTEM...
-KERNEL LOADED.
-
 WELCOME TO:
 ANKIT BHANKHARIA [un-KIT bhan-KHAH-ri-yah]
 Terminal Interface v1.0
