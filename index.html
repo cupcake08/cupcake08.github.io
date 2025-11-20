@@ -31,6 +31,65 @@
 
   <title>portfolio</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      background-color: #211832; /* Deep Purple Background */
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+
+    /* The Boot Loader Container */
+    .boot-loader {
+      text-align: left;
+      width: 320px;
+      z-index: 9999;
+    }
+
+    /* The Text Style */
+    .boot-text {
+      color: #00ff41; /* Matrix Green */
+      font-size: 13px;
+      line-height: 1.4;
+      white-space: normal;
+      text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+    }
+
+    /* The Blinking Cursor */
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background-color: #00ff41;
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      margin-top: 12px;
+      width: 100%;
+      height: 2px;
+      background-color: #1a1a1a;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #00ff41;
+      width: 10%; /* Start small, JS updates it */
+      transition: width 0.5s ease-out;
+      box-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+    }
+  </style>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
