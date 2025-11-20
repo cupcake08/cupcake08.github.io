@@ -4,68 +4,116 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TerminalParser {
-  
   static TextSpan parse(String text) {
     List<TextSpan> spans = [];
     final lines = text.split('\n');
-    
+
     for (var line in lines) {
       // 1. Boot Sequence Highlights
       if (line.contains("INITIALIZING SYSTEM") || line.contains("KERNEL LOADED")) {
         spans.add(TextSpan(text: "$line\n", style: _style(Colors.greenAccent, bold: true)));
         continue;
       }
-      if (line.contains("WELCOME TO")) {
-         spans.add(TextSpan(text: "$line\n", style: _style(Colors.cyanAccent, bold: true)));
-         continue;
+
+      // 2. SPECIFIC NAME HIGHLIGHTING (Name + Pronunciation)
+      if (line.contains("ANKIT BHANKHARIA")) {
+        final nameIndex = line.indexOf("ANKIT BHANKHARIA");
+        final bracketIndex = line.indexOf("[");
+
+        if (nameIndex != -1 && bracketIndex != -1) {
+          spans.add(
+            TextSpan(
+              children: [
+                // Text before name (if any)
+                TextSpan(text: line.substring(0, nameIndex), style: _style(Colors.white)),
+                // THE NAME (High Vis)
+                TextSpan(
+                  text: "ANKIT BHANKHARIA ",
+                  style: GoogleFonts.firaCode(
+                    color: Colors.cyanAccent,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 15, // Slightly larger
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                // THE PRONUNCIATION (Distinct style)
+                TextSpan(
+                  text: line.substring(bracketIndex), // Includes [un-KIT...]
+                  style: GoogleFonts.firaCode(
+                    color: Color(0xFFF25912),
+                    fontWeight: FontWeight.normal,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 13,
+                  ),
+                ),
+                const TextSpan(text: "\n"),
+              ],
+            ),
+          );
+          continue;
+        }
       }
 
-      // 2. Headers (ALL CAPS ending with :)
-      if (RegExp(r'^[A-Z\s]+:$').hasMatch(line.trim())) {
-        spans.add(TextSpan(
-          text: "$line\n",
-          style: GoogleFonts.firaCode(
-            color: Colors.amberAccent,
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            letterSpacing: 1.1,
-          )
-        ));
+      if (line.contains("WELCOME TO")) {
+        spans.add(TextSpan(text: "$line\n", style: _style(Colors.white, bold: true)));
         continue;
       }
 
-      // 3. Metadata [Blocks]
+      // 3. Headers (ALL CAPS ending with :)
+      if (RegExp(r'^[A-Z\s]+:$').hasMatch(line.trim())) {
+        spans.add(
+          TextSpan(
+            text: "$line\n",
+            style: GoogleFonts.firaCode(
+              color: Colors.amberAccent,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              letterSpacing: 1.1,
+            ),
+          ),
+        );
+        continue;
+      }
+
+      // 4. Metadata [Blocks]
       if (line.trim().startsWith('[')) {
         spans.add(TextSpan(text: "$line\n", style: _style(Colors.cyanAccent)));
         continue;
       }
 
-      // 4. Command Prompts (> Role:)
+      // 5. Command Prompts (> Role:)
       if (line.trim().startsWith('>')) {
-         final parts = line.split(':');
-         if (parts.length > 1) {
-           spans.add(TextSpan(children: [
-             TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent[100]!, bold: true)),
-             TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(const Color(0xFFE0E0E0))),
-           ]));
-         } else {
-           spans.add(TextSpan(text: "$line\n", style: _style(Colors.pinkAccent[100]!)));
-         }
-         continue;
+        final parts = line.split(':');
+        if (parts.length > 1) {
+          spans.add(
+            TextSpan(
+              children: [
+                TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent[100]!, bold: true)),
+                TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(const Color(0xFFE0E0E0))),
+              ],
+            ),
+          );
+        } else {
+          spans.add(TextSpan(text: "$line\n", style: _style(Colors.pinkAccent[100]!)));
+        }
+        continue;
       }
 
-      // 5. Key-Value pairs (Role:, Location:)
-      if (line.trim().startsWith('Role:') || line.trim().startsWith('Location:')) {
-         final parts = line.split(':');
-         spans.add(TextSpan(children: [
-           TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent, bold: true)),
-           TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(Colors.white)),
-         ]));
-         continue;
+      // 6. Key-Value pairs (About:, Location:)
+      if (line.trim().startsWith('About:') || line.trim().startsWith('Location:')) {
+        final parts = line.split(':');
+        spans.add(
+          TextSpan(
+            children: [
+              TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent, bold: true)),
+              TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(Colors.white)),
+            ],
+          ),
+        );
+        continue;
       }
 
-      // 6. Detect Links (http/https)
-      // This regex splits the line into "text before url" and "url"
+      // 7. Detect Links (http/https)
       final urlRegex = RegExp(r'(https?:\/\/[^\s]+)');
       if (urlRegex.hasMatch(line)) {
         final matches = urlRegex.allMatches(line);
@@ -73,49 +121,39 @@ class TerminalParser {
         List<TextSpan> lineSpans = [];
 
         for (var match in matches) {
-          // Text before the link
           if (match.start > lastMatchEnd) {
-            lineSpans.add(TextSpan(
-              text: line.substring(lastMatchEnd, match.start),
-              style: _style(const Color(0xFFB0BEC5))
-            ));
+            lineSpans.add(TextSpan(text: line.substring(lastMatchEnd, match.start), style: _style(Colors.white)));
           }
-          
-          // The Link itself
+
           String url = line.substring(match.start, match.end);
-          lineSpans.add(TextSpan(
-            text: url,
-            style: _style(Colors.blueAccent).copyWith(decoration: TextDecoration.underline),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () async {
-                final uri = Uri.parse(url);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri);
-                }
-              },
-          ));
-          
+          lineSpans.add(
+            TextSpan(
+              text: url,
+              style: _style(Colors.blueAccent).copyWith(decoration: TextDecoration.underline),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () async {
+                  final uri = Uri.parse(url);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri);
+                  }
+                },
+            ),
+          );
+
           lastMatchEnd = match.end;
         }
-        
-        // Text after the last link
+
         if (lastMatchEnd < line.length) {
-          lineSpans.add(TextSpan(
-            text: line.substring(lastMatchEnd),
-            style: _style(const Color(0xFFB0BEC5))
-          ));
+          lineSpans.add(TextSpan(text: line.substring(lastMatchEnd), style: _style(const Color(0xFFB0BEC5))));
         }
-        
-        lineSpans.add(const TextSpan(text: "\n")); // Newline at end of line
+
+        lineSpans.add(const TextSpan(text: "\n"));
         spans.add(TextSpan(children: lineSpans));
         continue;
       }
 
-      // 7. Default Text (Bullet points or normal text)
-      spans.add(TextSpan(
-        text: "$line\n",
-        style: _style(const Color(0xFFB0BEC5))
-      ));
+      // 8. Default Text
+      spans.add(TextSpan(text: "$line\n", style: _style(Colors.white)));
     }
 
     return TextSpan(children: spans);
@@ -126,7 +164,7 @@ class TerminalParser {
       color: color,
       fontWeight: bold ? FontWeight.bold : FontWeight.normal,
       fontSize: 13,
-      height: 1.4
+      height: 1.4,
     );
   }
 }

@@ -78,7 +78,7 @@ class _CommandInputState extends State<CommandInput> {
         children: [
           Text(
             promptText,
-            style: GoogleFonts.firaCode(color: Colors.pinkAccent, fontWeight: FontWeight.bold, fontSize: 14),
+            style: GoogleFonts.firaCode(color: Color(0xFFF25912), fontWeight: FontWeight.bold, fontSize: 14),
           ),
           Expanded(
             child: Stack(

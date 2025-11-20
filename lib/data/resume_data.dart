@@ -4,9 +4,13 @@ class ResumeData {
   static const String intro = '''
 INITIALIZING SYSTEM...
 KERNEL LOADED.
-WELCOME TO ANKIT BHANKHARIA'S TERMINAL INTERFACE v2.0
 
-Role: Software Engineer (Mobile & Backend Systems)
+WELCOME TO:
+ANKIT BHANKHARIA [un-KIT bhan-KHAH-ri-yah]
+Terminal Interface v1.0
+
+[Mobile Developer • Part-Time Hardware Tinkerer | Building apps that play nice with the real world]
+
 Location: Bangalore, Karnataka, India
 
 Type 'help' for a list of executable commands.
@@ -46,6 +50,7 @@ Focus Areas:
 - High-availability product development
 - System performance optimization
 - Hardware-software integration (Bluetooth, USB, Wi-Fi)
+- Embedded systems development
 ''';
 
   static const String experience = '''
@@ -120,12 +125,12 @@ OPEN SOURCE CONTRIBUTIONS:
   static const String skills = '''
 TECHNICAL STACK:
 ----------------
-[LANGUAGES]  :: Dart, Java, Go, SQL
-[FRAMEWORK]  :: Flutter (Mobile & Web)
+[LANGUAGES]  :: Dart, C, C++, Java, Go, SQL
+[FRAMEWORK]  :: Flutter (Mobile & Web), PlatformIO
 [BACKEND]    :: REST APIs, Microservices, System Design
-[HARDWARE]   :: Bluetooth Low Energy (BLE), USB Serial
+[HARDWARE]   :: Bluetooth Low Energy (BLE), USB Serial, mDNS
 [DEVOPS]     :: Docker, AWS, Git, CI/CD pipelines
-[CORE]       :: DSA, OOP, Unit Testing, AES Encryption
+[CORE]       :: DSA, OOP, Unit Testing, Security
 ''';
 
   static const String education = '''

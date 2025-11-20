@@ -16,7 +16,7 @@ class PortfolioApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
-        textTheme: GoogleFonts.interTextTheme(
+        textTheme: GoogleFonts.spaceGroteskTextTheme(
           ThemeData.dark().textTheme,
         ).apply(bodyColor: const Color(0xFFE0E0E0), displayColor: const Color(0xFFE0E0E0)),
       ),

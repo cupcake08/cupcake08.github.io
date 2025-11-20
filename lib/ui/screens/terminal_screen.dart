@@ -53,7 +53,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFF211832),
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -67,81 +67,84 @@ class _TerminalScreenState extends State<TerminalScreen> {
                 gradient: RadialGradient(
                   center: Alignment.center,
                   radius: 1.0,
-                  colors: [Colors.black.withValues(alpha: .3), Colors.black.withValues(alpha: .6)],
+                  colors: [Color(0xFF211832).withValues(alpha: .3), Color(0xFF211832).withValues(alpha: .6)],
                 ),
               ),
             ),
           ),
 
           // 3. Terminal Content
-          GestureDetector(
-            onTap: () => _focusNode.requestFocus(),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: keyboardHeight,
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  horizontalPadding,
-                  20.0,
-                  horizontalPadding,
-                  keyboardHeight > 0 ? keyboardHeight : 20.0,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 10.0).copyWith(top: 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount: _controller.history.length,
-                          physics: const ClampingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final entry = _controller.history[index];
-                            final bool isIntro = index == 0;
+                      child: GestureDetector(
+                        onTap: () {
+                          if (_hasIntroAnimRun) _focusNode.requestFocus();
+                        },
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: _controller.history.length,
+                            physics: const ClampingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final entry = _controller.history[index];
+                              final bool isIntro = index == 0;
 
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (entry.command.isNotEmpty)
-                                    Row(
-                                      children: [
-                                        Text(
-                                          isMobile ? "guest:~ " : ResumeData.promptSymbol,
-                                          style: GoogleFonts.firaCode(
-                                            color: Colors.pinkAccent,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (entry.command.isNotEmpty)
+                                      Row(
+                                        children: [
+                                          Text(
+                                            isMobile ? "guest:~ " : ResumeData.promptSymbol,
+                                            style: GoogleFonts.firaCode(
+                                              color: Color(0xFFF25912),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          entry.command,
-                                          style: GoogleFonts.firaCode(color: Colors.white, fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                  const SizedBox(height: 6),
+                                          Text(
+                                            entry.command,
+                                            style: GoogleFonts.firaCode(color: const Color(0xFFB0BEC5), fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                    const SizedBox(height: 6),
 
-                                  isIntro
-                                      ? RichTypewriter(
-                                          text: entry.output,
-                                          shouldAnimate: !_hasIntroAnimRun,
-                                          onComplete: () {
-                                            if (mounted && !_hasIntroAnimRun) {
-                                              setState(() {
-                                                _hasIntroAnimRun = true;
-                                              });
-                                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                _focusNode.requestFocus();
-                                              });
-                                            }
-                                          },
-                                        )
-                                      : SelectableText.rich(TerminalParser.parse(entry.output)),
-                                ],
-                              ),
-                            );
-                          },
+                                    isIntro
+                                        ? RichTypewriter(
+                                            text: entry.output,
+                                            shouldAnimate: !_hasIntroAnimRun,
+                                            onComplete: () {
+                                              if (mounted && !_hasIntroAnimRun) {
+                                                setState(() {
+                                                  _hasIntroAnimRun = true;
+                                                });
+                                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                  _focusNode.requestFocus();
+                                                });
+                                              }
+                                            },
+                                          )
+                                        : SelectableText.rich(TerminalParser.parse(entry.output)),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
