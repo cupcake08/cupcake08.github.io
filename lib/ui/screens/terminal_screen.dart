@@ -103,7 +103,6 @@ class _TerminalScreenState extends State<TerminalScreen> with WidgetsBindingObse
 
     return Scaffold(
       backgroundColor: Color(0xFF211832),
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // 1. Background
