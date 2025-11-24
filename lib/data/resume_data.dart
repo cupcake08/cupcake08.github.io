@@ -9,8 +9,6 @@ Terminal Interface v1.0
 [Mobile Developer • Part-Time Hardware Tinkerer | Building apps that play nice with the real world]
 
 Location: Bangalore, Karnataka, India
-
-Type 'help' for a list of executable commands.
 ''';
 
   static const String help = '''

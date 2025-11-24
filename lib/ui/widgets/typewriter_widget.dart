@@ -6,13 +6,9 @@ class RichTypewriter extends StatefulWidget {
   final String text;
   final bool shouldAnimate;
   final VoidCallback? onComplete;
+  final double fontSize;
 
-  const RichTypewriter({
-    super.key, 
-    required this.text, 
-    this.shouldAnimate = true,
-    this.onComplete,
-  });
+  const RichTypewriter({super.key, required this.text, this.shouldAnimate = true, this.onComplete, this.fontSize = 14});
 
   @override
   State<RichTypewriter> createState() => _RichTypewriterState();
@@ -27,7 +23,7 @@ class _RichTypewriterState extends State<RichTypewriter> {
   @override
   void initState() {
     super.initState();
-    _fullSpan = TerminalParser.parse(widget.text);
+    _fullSpan = TerminalParser.parse(widget.text, baseFontSize: widget.fontSize);
     _totalLength = _calculateLength(_fullSpan);
 
     if (widget.shouldAnimate) {
@@ -79,11 +75,11 @@ class _RichTypewriterState extends State<RichTypewriter> {
 
   TextSpan _truncateSpan(TextSpan span, int limit) {
     if (limit <= 0) return const TextSpan(text: "");
-    
+
     if (span.text != null) {
       final textLen = span.text!.length;
       if (limit >= textLen) {
-        return span; 
+        return span;
       } else {
         return TextSpan(
           text: span.text!.substring(0, limit),
@@ -92,16 +88,16 @@ class _RichTypewriterState extends State<RichTypewriter> {
         );
       }
     }
-    
+
     if (span.children != null) {
       List<InlineSpan> newChildren = [];
       int consumed = 0;
-      
+
       for (var child in span.children!) {
         if (child is TextSpan) {
           final childLen = _calculateLength(child);
           final remaining = limit - consumed;
-          
+
           if (remaining > 0) {
             if (remaining >= childLen) {
               newChildren.add(child);
@@ -109,7 +105,7 @@ class _RichTypewriterState extends State<RichTypewriter> {
             } else {
               newChildren.add(_truncateSpan(child, remaining));
               consumed += remaining;
-              break; 
+              break;
             }
           } else {
             break;

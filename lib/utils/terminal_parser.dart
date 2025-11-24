@@ -4,14 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TerminalParser {
-  static TextSpan parse(String text) {
+  static TextSpan parse(String text, {double baseFontSize = 14}) {
     List<TextSpan> spans = [];
     final lines = text.split('\n');
 
     for (var line in lines) {
       // 1. Boot Sequence Highlights
       if (line.contains("INITIALIZING SYSTEM") || line.contains("KERNEL LOADED")) {
-        spans.add(TextSpan(text: "$line\n", style: _style(Colors.greenAccent, bold: true)));
+        spans.add(TextSpan(text: "$line\n", style: _style(Colors.greenAccent, baseFontSize, bold: true)));
         continue;
       }
 
@@ -25,14 +25,14 @@ class TerminalParser {
             TextSpan(
               children: [
                 // Text before name (if any)
-                TextSpan(text: line.substring(0, nameIndex), style: _style(Colors.white)),
+                TextSpan(text: line.substring(0, nameIndex), style: _style(Colors.white, baseFontSize)),
                 // THE NAME (High Vis)
                 TextSpan(
                   text: "ANKIT BHANKHARIA ",
                   style: GoogleFonts.firaCode(
                     color: Colors.cyanAccent,
                     fontWeight: FontWeight.w900,
-                    fontSize: 15, // Slightly larger
+                    fontSize: baseFontSize + 1, // Slightly larger
                     letterSpacing: 1.1,
                   ),
                 ),
@@ -43,7 +43,7 @@ class TerminalParser {
                     color: Color(0xFFF25912),
                     fontWeight: FontWeight.normal,
                     fontStyle: FontStyle.italic,
-                    fontSize: 13,
+                    fontSize: baseFontSize - 1,
                   ),
                 ),
                 const TextSpan(text: "\n"),
@@ -55,7 +55,7 @@ class TerminalParser {
       }
 
       if (line.contains("WELCOME TO")) {
-        spans.add(TextSpan(text: "$line\n", style: _style(Colors.white, bold: true)));
+        spans.add(TextSpan(text: "$line\n", style: _style(Colors.white, baseFontSize, bold: true)));
         continue;
       }
 
@@ -67,7 +67,7 @@ class TerminalParser {
             style: GoogleFonts.firaCode(
               color: Colors.amberAccent,
               fontWeight: FontWeight.bold,
-              fontSize: 14,
+              fontSize: baseFontSize,
               letterSpacing: 1.1,
             ),
           ),
@@ -77,7 +77,7 @@ class TerminalParser {
 
       // 4. Metadata [Blocks]
       if (line.trim().startsWith('[')) {
-        spans.add(TextSpan(text: "$line\n", style: _style(Colors.cyanAccent)));
+        spans.add(TextSpan(text: "$line\n", style: _style(Colors.cyanAccent, baseFontSize)));
         continue;
       }
 
@@ -88,13 +88,13 @@ class TerminalParser {
           spans.add(
             TextSpan(
               children: [
-                TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent[100]!, bold: true)),
-                TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(const Color(0xFFE0E0E0))),
+                TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent[100]!, baseFontSize, bold: true)),
+                TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(const Color(0xFFE0E0E0), baseFontSize)),
               ],
             ),
           );
         } else {
-          spans.add(TextSpan(text: "$line\n", style: _style(Colors.pinkAccent[100]!)));
+          spans.add(TextSpan(text: "$line\n", style: _style(Colors.pinkAccent[100]!, baseFontSize)));
         }
         continue;
       }
@@ -105,8 +105,8 @@ class TerminalParser {
         spans.add(
           TextSpan(
             children: [
-              TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent, bold: true)),
-              TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(Colors.white)),
+              TextSpan(text: "${parts[0]}:", style: _style(Colors.pinkAccent, baseFontSize, bold: true)),
+              TextSpan(text: "${parts.sublist(1).join(':')}\n", style: _style(Colors.white, baseFontSize)),
             ],
           ),
         );
@@ -122,14 +122,16 @@ class TerminalParser {
 
         for (var match in matches) {
           if (match.start > lastMatchEnd) {
-            lineSpans.add(TextSpan(text: line.substring(lastMatchEnd, match.start), style: _style(Colors.white)));
+            lineSpans.add(
+              TextSpan(text: line.substring(lastMatchEnd, match.start), style: _style(Colors.white, baseFontSize)),
+            );
           }
 
           String url = line.substring(match.start, match.end);
           lineSpans.add(
             TextSpan(
               text: url,
-              style: _style(Colors.blueAccent).copyWith(decoration: TextDecoration.underline),
+              style: _style(Colors.blueAccent, baseFontSize).copyWith(decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
                   final uri = Uri.parse(url);
@@ -144,7 +146,9 @@ class TerminalParser {
         }
 
         if (lastMatchEnd < line.length) {
-          lineSpans.add(TextSpan(text: line.substring(lastMatchEnd), style: _style(const Color(0xFFB0BEC5))));
+          lineSpans.add(
+            TextSpan(text: line.substring(lastMatchEnd), style: _style(const Color(0xFFB0BEC5), baseFontSize)),
+          );
         }
 
         lineSpans.add(const TextSpan(text: "\n"));
@@ -153,17 +157,17 @@ class TerminalParser {
       }
 
       // 8. Default Text
-      spans.add(TextSpan(text: "$line\n", style: _style(Colors.white)));
+      spans.add(TextSpan(text: "$line\n", style: _style(Colors.white, baseFontSize)));
     }
 
     return TextSpan(children: spans);
   }
 
-  static TextStyle _style(Color color, {bool bold = false}) {
+  static TextStyle _style(Color color, double fontSize, {bool bold = false}) {
     return GoogleFonts.firaCode(
       color: color,
       fontWeight: bold ? FontWeight.bold : FontWeight.normal,
-      fontSize: 13,
+      fontSize: fontSize,
       height: 1.4,
     );
   }

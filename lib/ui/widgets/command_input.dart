@@ -7,8 +7,17 @@ class CommandInput extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final Function(String) onSubmit;
+  final double fontSize;
+  final String? hintText;
 
-  const CommandInput({super.key, required this.controller, required this.focusNode, required this.onSubmit});
+  const CommandInput({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+    required this.onSubmit,
+    this.fontSize = 14,
+    this.hintText,
+  });
 
   @override
   State<CommandInput> createState() => _CommandInputState();
@@ -66,7 +75,11 @@ class _CommandInputState extends State<CommandInput> {
       }
     }
 
-    final TextStyle commonStyle = GoogleFonts.firaCode(fontSize: 14, fontWeight: FontWeight.w500, height: 1.2);
+    final TextStyle commonStyle = GoogleFonts.firaCode(
+      fontSize: widget.fontSize,
+      fontWeight: FontWeight.w500,
+      height: 1.2,
+    );
 
     return CallbackShortcuts(
       bindings: {
@@ -78,7 +91,11 @@ class _CommandInputState extends State<CommandInput> {
         children: [
           Text(
             promptText,
-            style: GoogleFonts.firaCode(color: Color(0xFFF25912), fontWeight: FontWeight.bold, fontSize: 14),
+            style: GoogleFonts.firaCode(
+              color: Color(0xFFF25912),
+              fontWeight: FontWeight.bold,
+              fontSize: widget.fontSize,
+            ),
           ),
           Expanded(
             child: Stack(
@@ -99,7 +116,7 @@ class _CommandInputState extends State<CommandInput> {
                           // The visible "Ghost" suffix
                           TextSpan(
                             text: ghostSuffix,
-                            style: commonStyle.copyWith(color: Colors.white.withValues(alpha: .3)),
+                            style: commonStyle.copyWith(color: Colors.white.withOpacity(.3)),
                           ),
                         ],
                       ),
@@ -112,12 +129,17 @@ class _CommandInputState extends State<CommandInput> {
                   focusNode: widget.focusNode,
                   cursorColor: Colors.cyanAccent,
                   cursorOpacityAnimates: true,
-                  cursorHeight: 14,
+                  cursorHeight: widget.fontSize,
                   style: commonStyle.copyWith(color: Colors.cyanAccent),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     isDense: true,
-                    contentPadding: EdgeInsets.zero, // Critical for Stack alignment
+                    contentPadding: EdgeInsets.zero,
+                    hintText: widget.hintText,
+                    hintStyle: commonStyle.copyWith(
+                      color: Colors.white.withValues(alpha: .3),
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                   onSubmitted: (value) {
                     widget.onSubmit(value);
